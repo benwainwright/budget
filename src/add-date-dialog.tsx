@@ -1,97 +1,146 @@
-import { DatePicker } from "@mui/lab";
+import { Event } from "@mui/icons-material";
+import moment from "moment";
+import * as uuid from "uuid";
 import {
   Box,
   Button,
-  Checkbox,
+  ButtonGroup,
+  Card,
+  CardActions,
+  CardContent,
   FormControl,
-  FormControlLabel,
   Input,
   InputLabel,
+  List,
+  ListItem,
+  ListItemIcon,
   Modal,
-  TextField,
   Typography,
 } from "@mui/material";
 import { FC, useState } from "react";
 import { NewDate } from "./date";
-
+import { getDates } from "./recurrance";
 
 interface AddDateDialogProps {
   id: string;
-  name: string;
+  current?: NewDate;
+  onDelete?: (id: string) => void;
   onClose: () => void;
+  payday: Date;
   onSubmit: (newDate: NewDate) => void;
 }
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  display: 'flex',
-  flexDirection: 'column',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
   boxShadow: 24,
-  gap: 5,
-  p: 4,
 };
 
-export const AddDateDialog: FC<AddDateDialogProps> = (props) => {
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
-  const [date, setDate] = useState("");
-  const [weekly, setWeekly] = useState(false)
+export const AddDateDialog: FC<AddDateDialogProps> = ({
+  current,
+  onClose,
+  payday,
+  onSubmit,
+  id,
+  onDelete,
+}) => {
+  const [name, setName] = useState(current?.name);
+  const [amount, setAmount] = useState(current?.amount);
+  const [when, setWhen] = useState(current?.when);
+
+  const instances = getDates(when ?? "", payday);
 
   return (
-    <Modal open onClose={props.onClose}>
-      <Box sx={style}>
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Enter date of payment
-        </Typography>
+    <Modal open onClose={onClose}>
+      <Card sx={style}>
+        <CardContent
+          sx={{ display: "flex", flexDirection: "column", gap: 5, p: 5 }}
+        >
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            {current ? "Edit" : "New"} Budget Entry
+          </Typography>
 
-        <FormControl>
-          <InputLabel htmlFor="payment-name">Name</InputLabel>
-          <Input
-            id="payment-name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-          />
-        </FormControl>
+          <FormControl>
+            <InputLabel htmlFor="payment-name">Name</InputLabel>
+            <Input
+              id="payment-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </FormControl>
 
-        <FormControl>
-          <InputLabel htmlFor="amount">Amount</InputLabel>
-          <Input
-            id="amount"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-          />
-        </FormControl>
+          <FormControl>
+            <InputLabel htmlFor="amount">Amount</InputLabel>
+            <Input
+              id="amount"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+            />
+          </FormControl>
 
-        <FormControl>
-          <DatePicker
-            value={date}
-            onChange={(newValue) => {
-              setDate(newValue ?? "");
-            }}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </FormControl>
-
-        <Button
-          variant="contained"
-          onClick={() => {
-            props.onSubmit({
-              id: props.id,
-              date,
-              amount,
-              name,
-            });
+          <FormControl>
+            <InputLabel htmlFor="recur">When</InputLabel>
+            <Input
+              id="when"
+              value={when}
+              onChange={(event) => setWhen(event.target.value)}
+            />
+          </FormControl>
+          <List disablePadding>
+            {instances.map((instance) => (
+              <ListItem disableGutters>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 30,
+                  }}
+                >
+                  <Event />
+                </ListItemIcon>
+                {moment(instance).format("dddd MMM Do")}
+              </ListItem>
+            ))}
+          </List>
+        </CardContent>
+        <CardActions
+          sx={{
+            marginBottom: 4,
+            display: "flex",
+            justifyContent: "center",
           }}
         >
-          Add
-        </Button>
-      </Box>
+          <ButtonGroup variant="contained">
+            <Button
+              onClick={() => {
+                onSubmit({
+                  id: current?.id ?? uuid.v4(),
+                  potId: id,
+                  amount: amount ?? "",
+                  name: name ?? "",
+                  when: when ?? "",
+                });
+              }}
+            >
+              Save
+            </Button>
+
+            {current && (
+              <Button
+                variant="outlined"
+                onClick={() => onDelete?.(current?.id)}
+              >
+                Delete
+              </Button>
+            )}
+
+            <Button variant="outlined" onClick={onClose}>
+              Cancel
+            </Button>
+          </ButtonGroup>
+        </CardActions>
+      </Card>
     </Modal>
   );
 };

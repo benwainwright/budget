@@ -1,6 +1,7 @@
 export interface NewDate {
   id: string;
+  potId: string;
   name: string;
-  date: string;
+  when: string;
   amount: string;
 }

@@ -2,7 +2,6 @@ import useSWR from "swr";
 import { useToken } from "./use-token";
 
 const fetcher = async (path: string, token: string) => {
-  console.log(path, token);
   const finalPath = `https://api.monzo.com/${path}`;
   return fetch(finalPath, {
     headers: {
@@ -11,7 +10,7 @@ const fetcher = async (path: string, token: string) => {
   }).then((r) => r.json());
 };
 
-export const useMonzo = (path: string | (() => string)) => {
+export const useMonzo = <T>(path: string | (() => string | undefined)) => {
   const token = useToken();
 
   const key =
@@ -19,5 +18,5 @@ export const useMonzo = (path: string | (() => string)) => {
       ? () => token && path() && [path(), token]
       : token && [path, token];
 
-  return useSWR(key, fetcher);
+  return useSWR<T>(key, fetcher);
 };
