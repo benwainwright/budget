@@ -2,7 +2,6 @@ import { Event } from "@mui/icons-material";
 import moment from "moment";
 import * as uuid from "uuid";
 import {
-  Box,
   Button,
   ButtonGroup,
   Card,
@@ -18,16 +17,16 @@ import {
   Typography,
 } from "@mui/material";
 import { FC, useState } from "react";
-import { NewDate } from "./date";
-import { getDates } from "./recurrance";
+import { BudgetEntry } from "../types/budget-entry";
+import { getDates } from "../lib/recurrance";
 
 interface AddDateDialogProps {
   id: string;
-  current?: NewDate;
+  current?: BudgetEntry;
   onDelete?: (id: string) => void;
   onClose: () => void;
   payday: Date;
-  onSubmit: (newDate: NewDate) => void;
+  onSubmit: (newDate: BudgetEntry) => void;
 }
 
 const style = {

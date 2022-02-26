@@ -1,17 +1,18 @@
 import moment from "moment";
-import { NewDate } from "./date";
+import { BudgetEntry } from "../types/budget-entry";
+import { Pot } from "../types/pot";
 import { getDates } from "./recurrance";
-import { Pot } from "./use-pots";
 
-export const makePlan = (
-  toBudget: number,
+export const calculateBudget = (
+  overdraft: number,
+  balance: number,
   pots: Pot[],
-  dates: NewDate[],
+  entries: BudgetEntry[],
   surplusPot: string,
   endDate: Date
 ) => {
   const changedPots = pots.map((pot) => {
-    const rawDates = dates.filter((date) => date.potId === pot.id);
+    const rawDates = entries.filter((date) => date.potId === pot.id);
 
     const potDates = rawDates
       .flatMap((date) =>
@@ -42,17 +43,25 @@ export const makePlan = (
     };
   });
 
-  const surplus =
-    toBudget + changedPots.reduce((accum, item) => accum - item.adjustment, 0);
+  const potTotals = changedPots.reduce(
+    (accum, item) => accum + item.balance,
+    0
+  );
 
+  const planned = changedPots.reduce(
+    (accum, item) => accum + item.totalToBudget,
+    0
+  );
+  const availableBalance = balance + overdraft;
+  const surplus = availableBalance + potTotals - planned;
   const foundSurplus = changedPots.find((pot) => pot.id === surplusPot);
 
-  if (foundSurplus) {
+  if (foundSurplus && surplus >= 0) {
     foundSurplus.adjustment = surplus;
   }
 
   return {
     changedPots,
-    surplus: surplus > 0 ? surplus : 0,
+    surplus,
   };
 };

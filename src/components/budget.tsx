@@ -1,10 +1,6 @@
 import {
-  Box,
   IconButton,
-  Input,
-  InputLabel,
   List,
-  ListItem,
   Paper,
   Radio,
   RadioGroup,
@@ -14,55 +10,44 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import { usePots } from "./use-pots";
-import { DatePicker } from "@mui/lab";
-import { AddDateDialog } from "./add-date-dialog";
-import { NewDate } from "./date";
-import moment from "moment";
 import { AddBox, Delete } from "@mui/icons-material";
-import { makePlan } from "./make-plan";
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-  DraggingStyle,
-  NotDraggingStyle,
-} from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { FC, useContext, useEffect, useState } from "react";
+
+import { usePots } from "../hooks/use-pots";
+import { AddDateDialog } from "./add-date-dialog";
+import { BudgetEntry } from "../types/budget-entry";
+import { calculateBudget } from "../lib/make-plan";
 import { BudgetEntryItem } from "./budget-entry-items";
+import { useRetailAccountBalance } from "../hooks/use-retail-account";
+import { SettingsContext } from "../settings-context";
 
 const DATES_KEY = "budget-dates";
-const PAYDAY_KEY = "budget-payday";
 const SURPLUS_POT_KEY = "budget-surplus-pot";
-const TOBUDGET_KEY = "budget-tobudget";
 const HIDDEN_POTS = "budget-hidden-pots";
 
 const getListStyle = (isDraggingOver: boolean) => ({
   background: isDraggingOver ? "lightblue" : "none",
 });
 
-export const Pots: FC = () => {
+export const Budget: FC = () => {
+  const { settings } = useContext(SettingsContext);
+  const { data: balanceData } = useRetailAccountBalance();
   const { data } = usePots();
-  const [endDate, setEndDate] = useState<string>(
-    localStorage.getItem(PAYDAY_KEY) ?? ""
-  );
   const [hidden, setHidden] = useState<string[]>(
     JSON.parse(localStorage.getItem(HIDDEN_POTS) ?? "[]") ?? []
   );
-  const [dates, setDates] = useState<NewDate[]>(
+  const [dates, setDates] = useState<BudgetEntry[]>(
     JSON.parse(localStorage.getItem(DATES_KEY) ?? "[]") ?? []
   );
 
-  const [toBudget, setToBudget] = useState<number>(
-    Number(localStorage.getItem(TOBUDGET_KEY))
-  );
   const [surplusPot, setSurplusPot] = useState<string>(
     localStorage.getItem(SURPLUS_POT_KEY) ?? ""
   );
+
+  const balance = (balanceData?.balance ?? 0) / 100;
 
   const [addDialogPot, setAddDialogPot] = useState<string | undefined>();
   const [addDialogPotName, setAddDialogPotName] = useState<
@@ -70,17 +55,31 @@ export const Pots: FC = () => {
   >();
 
   useEffect(() => {
-    endDate && localStorage.setItem(PAYDAY_KEY, endDate);
     hidden.length > 0 &&
       localStorage.setItem(HIDDEN_POTS, JSON.stringify(hidden));
     dates.length > 0 && localStorage.setItem(DATES_KEY, JSON.stringify(dates));
     surplusPot && localStorage.setItem(SURPLUS_POT_KEY, surplusPot);
-    toBudget && localStorage.setItem(TOBUDGET_KEY, String(toBudget));
-  }, [endDate, dates, surplusPot, toBudget, hidden]);
+  }, [dates, surplusPot, hidden]);
 
-  const payday = new Date(endDate);
-  const plan = makePlan(
-    toBudget,
+  const payday = settings.nextPayday;
+
+  if (!payday) {
+    return (
+      <>
+        <Typography variant="h1" component="h2">
+          Budget
+        </Typography>
+
+        <Typography>
+          Please configure data of next payday on the settings page
+        </Typography>
+      </>
+    );
+  }
+
+  const plan = calculateBudget(
+    settings.overdraft,
+    balance,
     data?.pots?.filter((pot) => !hidden.includes(pot.id)) ?? [],
     dates,
     surplusPot,
@@ -118,6 +117,7 @@ export const Pots: FC = () => {
       <Typography variant="h4" component="h3">
         {formatter.format(plan.surplus)} remaining
       </Typography>
+
       {addDialogPot && addDialogPotName && (
         <AddDateDialog
           payday={payday}
@@ -134,36 +134,8 @@ export const Pots: FC = () => {
         />
       )}
 
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          paddingTop: 20,
-          paddingBottom: 60,
-          gap: 25,
-        }}
-      >
-        <DatePicker
-          label="Next Payday"
-          value={endDate}
-          onChange={(newValue) => {
-            setEndDate(newValue ?? "");
-          }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-
-        <Box style={{ display: "flex", flexDirection: "column" }}>
-          <InputLabel htmlFor="budget">Amount To Budget</InputLabel>
-          <Input
-            id="budget"
-            value={toBudget}
-            onChange={(event) => setToBudget(Number(event.target.value))}
-          />
-        </Box>
-      </Box>
-
       <RadioGroup name="radio-buttons-group">
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ marginTop: 5 }}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
@@ -201,7 +173,7 @@ export const Pots: FC = () => {
                             style={getListStyle(snapshot.isDraggingOver)}
                           >
                             <TableCell>
-                  <Typography variant="h5">{pot.name}</Typography>
+                              <Typography variant="h5">{pot.name}</Typography>
                             </TableCell>
                             <TableCell align="center">
                               {formatter.format(pot.balance)}

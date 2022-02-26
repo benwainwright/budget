@@ -1,4 +1,4 @@
-import { CurrencyPound, DragIndicator, Event } from "@mui/icons-material";
+import { DragIndicator, Event } from "@mui/icons-material";
 import {
   ListItem,
   ListItemButton,
@@ -13,15 +13,15 @@ import {
   NotDraggingStyle,
 } from "react-beautiful-dnd";
 import { AddDateDialog } from "./add-date-dialog";
-import { NewDate } from "./date";
+import { BudgetEntry } from "../types/budget-entry";
 
 interface BudgetEntryItemProps {
   index: number;
-  date: NewDate;
-  dates: NewDate[];
+  date: BudgetEntry;
+  dates: BudgetEntry[];
   isFinal: boolean;
   payday: Date;
-  onEdit: (date: NewDate) => void;
+  onEdit: (date: BudgetEntry) => void;
   onDelete: () => void;
 }
 
@@ -47,7 +47,7 @@ export const BudgetEntryItem: FC<BudgetEntryItemProps> = (props) => {
         <AddDateDialog
           current={props.date}
           payday={props.payday}
-          onSubmit={(date: NewDate) => {
+          onSubmit={(date: BudgetEntry) => {
             props.onEdit(date);
             setShowEdit(false);
           }}

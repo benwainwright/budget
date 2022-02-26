@@ -1,4 +1,4 @@
-export interface NewDate {
+export interface BudgetEntry {
   id: string;
   potId: string;
   name: string;

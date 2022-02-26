@@ -1,27 +1,13 @@
+import { Pot } from "../types/pot";
+import { useAccounts } from "./use-accounts";
 import { useMonzo } from "./use-monzo";
-
-export interface Pot {
-  id: string;
-  balance: string;
-  name: string;
-  weekly: boolean;
-}
-
-interface Account {
-  type: "uk_retail";
-  id: string;
-}
-
-interface AccountsResponse {
-  accounts: Account[];
-}
 
 interface PotsResponse {
   pots: Pot[];
 }
 
 export const usePots = () => {
-  const { data } = useMonzo<AccountsResponse>("accounts");
+  const { data } = useAccounts()
 
   const main = data?.accounts?.find(
     (account: any) => account.type === "uk_retail"
