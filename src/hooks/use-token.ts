@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
-const MONZO_ID = "oauth2client_00009pjIPXhWYkc6rvfa1C";
+const MONZO_ID = "oauth2client_0000AGsrmDCRRbCYvHz1Yv";
 const MONZO_SECRET =
-  "mnzconf.CV//V1y61tVkUCH6/qlkq58scua2LFCnAMuUKAwO1imYVJzfERJjNaF/q3TLtVVxvKktrjXnKBU9V53kvD3h";
-const MONZO_REDIRECT_URI = "http://localhost:3000";
+  "mnzpub.bY1+LQZy0sx6I4kY+iuIYYQjqhz50v/5da4o3n7vjYSqmyWT5INbX68Ys7HJJorAGyQghcou4luHmZk38jIR/Q==";
+const MONZO_REDIRECT_URI = "budget-app://auth";
 const BUDGET_REDIRECT_STATE_KEY = "budget_redirect_state";
 const BUDGET_TOKEN_KEY = "budget-token";
 

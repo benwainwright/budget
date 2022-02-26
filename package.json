@@ -2,6 +2,7 @@
   "name": "budget",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/electron/main.js",
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
@@ -23,8 +24,10 @@
     "@types/uuid": "^8.3.4",
     "add": "^2.0.6",
     "chrono-node": "^2.3.7",
+    "concurrently": "^7.0.0",
     "crypto-browserify": "^3.12.0",
     "electron": "^17.1.0",
+    "electron-is-dev": "^2.0.0",
     "later": "RickCarlino/later",
     "moment": "^2.29.1",
     "prettier": "^2.5.1",
@@ -41,10 +44,12 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently -k \"BROWSER=none react-scripts start\" \"yarn start:electron\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build:tsc:cdk": "tsc --project ./tsconfig.electron.json",
+    "start:electron": "yarn build:tsc:cdk && wait-on tcp:3000 && electron ./dist/electron/main.js"
   },
   "eslintConfig": {
     "extends": [
