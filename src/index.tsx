@@ -8,8 +8,8 @@ import { AppWrapper } from "./components/app-wrapper";
 ReactDOM.render(
   <React.StrictMode>
     <AppWrapper>
-    <App />
-  </AppWrapper>
+      <App />
+    </AppWrapper>
   </React.StrictMode>,
   document.getElementById("root")
 );

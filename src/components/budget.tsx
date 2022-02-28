@@ -22,7 +22,7 @@ import { BudgetEntry } from "../types/budget-entry";
 import { calculateBudget } from "../lib/make-plan";
 import { BudgetEntryItem } from "./budget-entry-items";
 import { useRetailAccountBalance } from "../hooks/use-retail-account";
-import { SettingsContext } from "../settings-context";
+import { SettingsContext } from "../providers/settings-provider";
 
 const DATES_KEY = "budget-dates";
 const SURPLUS_POT_KEY = "budget-surplus-pot";

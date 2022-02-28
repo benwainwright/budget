@@ -1,7 +1,7 @@
 import { DatePicker } from "@mui/lab";
 import { Box, TextField, Typography } from "@mui/material";
 import { FC, useContext } from "react";
-import { SettingsContext } from "../settings-context";
+import { SettingsContext } from "../providers/settings-provider";
 
 export const Settings: FC = () => {
   const { settings, setSettings } = useContext(SettingsContext);

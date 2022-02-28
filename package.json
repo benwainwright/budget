@@ -49,12 +49,10 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "start": "concurrently -k \"BROWSER=none react-scripts start\" \"yarn start:electron\"",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build:tsc:cdk": "tsc --project ./tsconfig.electron.json",
-    "start:electron": "yarn build:tsc:cdk && wait-on tcp:3000 && electron ./dist/electron/main.js"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
