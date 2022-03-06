@@ -13,16 +13,16 @@ export class WebsiteStack extends cdk.Stack {
     super(scope, id, props);
 
     const clientId = new Secret(this, "client-id", {
-      secretName: "monzo-client-id"
-    })
+      secretName: "monzo-client-id",
+    });
 
     const clientSecret = new Secret(this, "client-secret", {
-      secretName: "monzo-client-secret"
-    })
+      secretName: "monzo-client-secret",
+    });
 
     const redirectUrl = new Secret(this, "redirect-uri", {
-      secretName: "monzo-redirect-url"
-    })
+      secretName: "monzo-redirect-url",
+    });
 
     const authLambda = new NodejsFunction(
       this,
@@ -43,25 +43,24 @@ export class WebsiteStack extends cdk.Stack {
       }
     );
 
-
-    const api = new RestApi(this, 'data-api', {
+    const api = new RestApi(this, "data-api", {
       restApiName: "budget-api",
       defaultCorsPreflightOptions: {
-          allowHeaders: [
-            'Content-Type',
-            'X-Amz-Date',
-            'Authorization',
-            'X-Api-Key',
-          ],
-          allowMethods: ['OPTIONS', 'GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-          allowCredentials: true,
-          allowOrigins: ['http://localhost:3000'],
+        allowHeaders: [
+          "Content-Type",
+          "X-Amz-Date",
+          "Authorization",
+          "X-Api-Key",
+        ],
+        allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+        allowCredentials: true,
+        allowOrigins: ["http://localhost:3000"],
       },
     });
 
-    const auth = api.root.addResource("auth")
+    const auth = api.root.addResource("auth");
 
-    auth.addMethod("POST", new LambdaIntegration(authLambda))
+    auth.addMethod("POST", new LambdaIntegration(authLambda));
     new StaticWebsite(this, "budget-app-static-site", { name: "budget-app" });
 
     const userPool = new UserPool(this, "budget-pool", {

@@ -1,5 +1,9 @@
 import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
-import { CurrencyPound, Settings as SettingsIcon } from "@mui/icons-material";
+import {
+  CurrencyPound,
+  Settings as SettingsIcon,
+  Event,
+} from "@mui/icons-material";
 import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +32,12 @@ export const BottomBar: FC = () => {
           onClick={() => navigate("/settings")}
           label="Settings"
           icon={<SettingsIcon />}
+        />
+
+        <BottomNavigationAction
+          onClick={() => navigate("/regular-payments")}
+          label="Payments"
+          icon={<Event />}
         />
       </BottomNavigation>
     </Paper>

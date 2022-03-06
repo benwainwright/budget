@@ -1,4 +1,5 @@
-import { createContext, FC, useState } from "react";
+import { createContext, FC } from "react";
+import { usePersistedState } from "../hooks/use-persisted-state";
 
 export interface Settings {
   nextPayday?: Date;
@@ -19,8 +20,13 @@ export const SettingsContext = createContext<SettingsContext>({
   setSettings: () => {},
 });
 
+const SETTINGS_KEY = "budget-settings";
+
 export const SettingsProvider: FC = ({ children }) => {
-  const [settings, setSettings] = useState(defaultSettings);
+  const [settings, setSettings] = usePersistedState(
+    SETTINGS_KEY,
+    defaultSettings
+  );
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
       {children}

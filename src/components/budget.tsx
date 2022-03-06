@@ -146,9 +146,6 @@ export const Budget: FC = () => {
                   <Typography variant="h5">Balance</Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="h5">Actions</Typography>
-                </TableCell>
-                <TableCell>
                   <Typography variant="h5">Entries</Typography>
                 </TableCell>
                 <TableCell>
@@ -177,24 +174,6 @@ export const Budget: FC = () => {
                             </TableCell>
                             <TableCell align="center">
                               {formatter.format(pot.balance)}
-                            </TableCell>
-                            <TableCell padding="none" align="center">
-                              <IconButton
-                                onClick={() => {
-                                  setAddDialogPot(pot.id);
-                                  setAddDialogPotName(pot.name);
-                                }}
-                              >
-                                <AddBox />
-                              </IconButton>
-
-                              <IconButton
-                                onClick={() => {
-                                  setHidden([...hidden, pot.id]);
-                                }}
-                              >
-                                <Delete />
-                              </IconButton>
                             </TableCell>
                             <TableCell padding="none">
                               <List disablePadding>

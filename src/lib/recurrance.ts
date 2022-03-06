@@ -44,12 +44,12 @@ export const recurrance = (text: string, to: Date) => {
   return found;
 };
 
-export const getDates = (text: string, to: Date) => {
+export const getDates = (text: string, to: Date, max?: number) => {
   const all = recurrance(text, to);
   if (all.length === 0) {
     const result = chrono.parseDate(text);
     return result ? [result] : [];
   }
 
-  return all;
+  return max === undefined ? all : all.slice(0, max);
 };

@@ -15,10 +15,12 @@ export const Settings: FC = () => {
           id="outlined-basic"
           label="Overdraft Limit"
           variant="outlined"
-          onChange={(event) => setSettings({
-            ...settings,
-            overdraft: Number(event.target.value)
-          })}
+          onChange={(event) =>
+            setSettings({
+              ...settings,
+              overdraft: Number(event.target.value),
+            })
+          }
           value={settings.overdraft}
         />
         <DatePicker

@@ -7,7 +7,7 @@ interface PotsResponse {
 }
 
 export const usePots = () => {
-  const { data } = useAccounts()
+  const { data } = useAccounts();
 
   const main = data?.accounts?.find(
     (account: any) => account.type === "uk_retail"

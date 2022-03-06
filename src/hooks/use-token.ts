@@ -43,7 +43,7 @@ export const useToken = () => {
           localStorage.setItem(BUDGET_TOKEN_KEY, tokenData.access_token);
         }
         console.log(tokenData);
-        // window.location.href = `http://localhost:3000`;
+        window.location.href = `http://localhost:3000`;
         return;
       }
 
