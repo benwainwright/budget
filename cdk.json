@@ -1,0 +1,4 @@
+{
+  "app": "yarn ts-node  --project tsconfig.cdk.json src/stack/entry.ts",
+  "context": {}
+}

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const MONZO_ID = "oauth2client_0000AGsrmDCRRbCYvHz1Yv";
 const MONZO_SECRET =
   "mnzpub.bY1+LQZy0sx6I4kY+iuIYYQjqhz50v/5da4o3n7vjYSqmyWT5INbX68Ys7HJJorAGyQghcou4luHmZk38jIR/Q==";
-const MONZO_REDIRECT_URI = "budget-app://auth";
+const MONZO_REDIRECT_URI = "http://localhost:3000";
 const BUDGET_REDIRECT_STATE_KEY = "budget_redirect_state";
 const BUDGET_TOKEN_KEY = "budget-token";
 
@@ -39,8 +39,11 @@ export const useToken = () => {
         );
 
         const tokenData = await tokenResponse.json();
-        localStorage.setItem(BUDGET_TOKEN_KEY, tokenData.access_token);
-        window.location.href = `http://localhost:3000`;
+        if (tokenData.access_token) {
+          localStorage.setItem(BUDGET_TOKEN_KEY, tokenData.access_token);
+        }
+        console.log(tokenData);
+        // window.location.href = `http://localhost:3000`;
         return;
       }
 
