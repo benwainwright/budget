@@ -1,8 +1,8 @@
 import { Budget } from "../types/budget";
 
-export const calculateBudget = (
+export const calculateBudgetOutcome = (
   overdraft: number,
-  balance: number,
+  accountBalance: number,
   budget: Budget,
   surplusPot: string
 ) => {
@@ -33,7 +33,7 @@ export const calculateBudget = (
     0
   );
 
-  const availableBalance = balance + overdraft;
+  const availableBalance = accountBalance / 100 + overdraft;
   const surplus = availableBalance + potTotals - planned;
   const foundSurplus = hydratedPots.find((pot) => pot.id === surplusPot);
 

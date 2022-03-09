@@ -35,6 +35,7 @@ const getListStyle = (isDraggingOver: boolean) => ({
 export const Budget: FC = () => {
   const { settings } = useContext(SettingsContext);
   const { data: balanceData } = useRetailAccountBalance();
+  console.log("render");
   const { data } = usePots();
   const [hidden, setHidden] = useState<string[]>(
     JSON.parse(localStorage.getItem(HIDDEN_POTS) ?? "[]") ?? []
@@ -76,15 +77,6 @@ export const Budget: FC = () => {
       </>
     );
   }
-
-  const plan = calculateBudget(
-    settings.overdraft,
-    balance,
-    data?.pots?.filter((pot) => !hidden.includes(pot.id)) ?? [],
-    dates,
-    surplusPot,
-    payday
-  );
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) {

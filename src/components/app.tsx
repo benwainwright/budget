@@ -1,10 +1,10 @@
 import Box from "@mui/material/Box";
-import { Budget } from "./budget";
 import { Settings } from "./settings";
 import { Routes, Route } from "react-router-dom";
 import { AppBar, Typography } from "@mui/material";
 import { BottomBar } from "./bottom-bar";
 import { Payments } from "./regular-payments";
+import { Budgets } from "./budgets";
 
 export default function SimpleBottomNavigation() {
   return (
@@ -16,7 +16,7 @@ export default function SimpleBottomNavigation() {
       </AppBar>
       <Box style={{ paddingTop: 100 }}>
         <Routes>
-          <Route path="/" element={<Budget />} />
+          <Route path="/" element={<Budgets />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/regular-payments" element={<Payments />} />
         </Routes>

@@ -1,5 +1,3 @@
-import { Event } from "@mui/icons-material";
-import moment from "moment";
 import * as uuid from "uuid";
 import {
   Button,
@@ -10,25 +8,20 @@ import {
   FormControl,
   Input,
   InputLabel,
-  List,
-  ListItem,
-  ListItemIcon,
-  MenuItem,
   Modal,
-  Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { FC, useState } from "react";
-import { getDates } from "../lib/recurrance";
-import { RegularPayment } from "../providers/payments-provider";
-import { Pot } from "../types/pot";
+import { Adjustment } from "../types/budget";
+import { DatePicker } from "@mui/lab";
 
-interface AddPaymentDialogProps {
-  current?: RegularPayment;
+interface AddAdjustmentDialogProps {
+  id: string;
+  current?: Adjustment;
   onDelete?: (id: string) => void;
   onClose: () => void;
-  pots: Pot[];
-  onSubmit: (newDate: RegularPayment) => void;
+  onSubmit: (newDate: Adjustment) => void;
 }
 
 const style = {
@@ -40,23 +33,15 @@ const style = {
   boxShadow: 24,
 };
 
-export const AddPaymentDialog: FC<AddPaymentDialogProps> = ({
+export const AddAdjustmentDialog: FC<AddAdjustmentDialogProps> = ({
   current,
   onClose,
   onSubmit,
   onDelete,
-  pots,
 }) => {
   const [name, setName] = useState(current?.name);
   const [amount, setAmount] = useState(current?.amount);
-  const [when, setWhen] = useState(current?.when);
-  const [pot, setPot] = useState<Pot | undefined>(current?.pot);
-
-  const nextYear = new Date();
-
-  nextYear.setFullYear(nextYear.getFullYear() + 1);
-
-  const instances = getDates(when ?? "", nextYear, undefined, 10);
+  const [when, setWhen] = useState(current?.date);
 
   return (
     <Modal open onClose={onClose}>
@@ -65,7 +50,7 @@ export const AddPaymentDialog: FC<AddPaymentDialogProps> = ({
           sx={{ display: "flex", flexDirection: "column", gap: 5, p: 5 }}
         >
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            {current ? "Edit" : "New"} Payment
+            {current ? "Edit" : "New"} Budget Entry
           </Typography>
 
           <FormControl>
@@ -85,45 +70,17 @@ export const AddPaymentDialog: FC<AddPaymentDialogProps> = ({
               onChange={(event) => setAmount(event.target.value)}
             />
           </FormControl>
-          <FormControl required>
-            <InputLabel htmlFor="pot">Pot</InputLabel>
-            <Select
-              labelId="pot"
-              id="pots"
-              value={pot?.id}
-              label="Age"
-              onChange={(event) =>
-                setPot(pots.find((pot) => pot.id === event.target.value))
-              }
-            >
-              {pots.map((pot) => (
-                <MenuItem value={pot.id}>{pot.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
 
           <FormControl>
-            <InputLabel htmlFor="recur">When</InputLabel>
-            <Input
-              id="when"
+            <DatePicker
+              label="when"
               value={when}
-              onChange={(event) => setWhen(event.target.value)}
+              onChange={(newValue) => {
+                setWhen(newValue ?? undefined);
+              }}
+              renderInput={(params) => <TextField {...params} />}
             />
           </FormControl>
-          <List disablePadding>
-            {instances.map((instance) => (
-              <ListItem disableGutters>
-                <ListItemIcon
-                  sx={{
-                    minWidth: 30,
-                  }}
-                >
-                  <Event />
-                </ListItemIcon>
-                {moment(instance).format("dddd MMM Do")}
-              </ListItem>
-            ))}
-          </List>
         </CardContent>
         <CardActions
           sx={{
@@ -137,11 +94,10 @@ export const AddPaymentDialog: FC<AddPaymentDialogProps> = ({
               onClick={() => {
                 onSubmit({
                   id: current?.id ?? uuid.v4(),
-                  fromMain: false,
-                  pot: pot,
                   amount: amount ?? "",
                   name: name ?? "",
-                  when: when ?? "",
+                  paymentId: "",
+                  date: when,
                 });
               }}
             >

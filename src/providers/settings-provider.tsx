@@ -4,6 +4,7 @@ import { usePersistedState } from "../hooks/use-persisted-state";
 export interface Settings {
   nextPayday?: Date;
   overdraft: number;
+  surplusPot: string;
 }
 
 interface SettingsContext {
@@ -13,6 +14,7 @@ interface SettingsContext {
 
 const defaultSettings = {
   overdraft: 0,
+  surplusPot: "",
 };
 
 export const SettingsContext = createContext<SettingsContext>({
@@ -27,6 +29,7 @@ export const SettingsProvider: FC = ({ children }) => {
     SETTINGS_KEY,
     defaultSettings
   );
+  console.log(settings);
   return (
     <SettingsContext.Provider value={{ settings, setSettings }}>
       {children}

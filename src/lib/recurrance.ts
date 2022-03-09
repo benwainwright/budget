@@ -24,32 +24,35 @@ const laterReccurance = (text: string, from: Date, to: Date) => {
     | Date[]
     | number;
 
-  if (instances === 0) {
+  if (typeof instances === "number") {
     return [];
   }
 
-  return instances !== 0 && Array.isArray(instances) ? instances : [instances];
+  return Array.isArray(instances) ? instances : [instances];
 };
 
-export const recurrance = (text: string, to: Date) => {
+export const recurrance = (text: string, to: Date, from?: Date) => {
   const start = new Date();
   start.setDate(start.getDate() + 1);
 
-  const found = rruleRecurrance(text, start, to);
+  const found = rruleRecurrance(text, from ?? start, to);
 
   if (found.length === 0) {
-    return laterReccurance(text, start, to);
+    console.log(`text`, text);
+    console.log(`from`, from);
+    console.log(`start`, start);
+    console.log(`to`, to);
+    return laterReccurance(text, from ?? start, to);
   }
 
   return found;
 };
 
-export const getDates = (text: string, to: Date, max?: number) => {
-  const all = recurrance(text, to);
+export const getDates = (text: string, to: Date, from?: Date, max?: number) => {
+  const all = recurrance(text, to, from);
   if (all.length === 0) {
     const result = chrono.parseDate(text);
     return result ? [result] : [];
   }
-
   return max === undefined ? all : all.slice(0, max);
 };
